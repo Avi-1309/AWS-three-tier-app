@@ -1,1 +1,75 @@
+# Highly Available Three-Tier Web Application on AWS
 
+![AWS](https://img.shields.io/badge/AWS-Cloud-orange?logo=amazon-aws)
+![HA](https://img.shields.io/badge/High%20Availability-Multi--AZ-blue)
+![Status](https://img.shields.io/badge/Status-Deployed-brightgreen)
+
+## Overview
+A highly available three-tier web application built on AWS, spanning multiple Availability Zones with automatic failover, load balancing, and proactive monitoring.
+
+## Architecture
+```
+            [ Internet ]
+                 |
+           [ Route 53 ]
+          Health checks + DNS
+                 |
+  [ Application Load Balancer ]
+     /                       \
+[Web Tier - EC2]         [Web Tier - EC2]
+  Auto Scaling               Auto Scaling
+  (AZ-1)                     (AZ-2)
+     \                       /
+      [ App Logic Layer ]
+                 |
+    [ RDS MySQL — Multi-AZ ]
+    Primary (AZ-1) | Standby (AZ-2)
+                 +
+            [ S3 — Static Assets ]
+```
+
+## AWS Services Used
+| Service | Purpose |
+|---|---|
+| EC2 + Auto Scaling Groups | Web servers with variable traffic handling |
+| Application Load Balancer | Distributes traffic, health-checks instances |
+| VPC (Custom) | Isolated network — public/private subnets |
+| RDS MySQL (Multi-AZ) | High availability DB with automated backups |
+| S3 | Static assets + versioning enabled |
+| IAM Roles + Security Groups | Least-privilege access, network-layer security |
+| CloudWatch + SNS | Dashboards, alarms, proactive notifications |
+| Route 53 | DNS routing + health-check-based failover |
+
+## Key Design Decisions
+- **Multi-AZ** throughout: EC2 ASG + RDS span 2 AZs — no single AZ failure
+- **Private subnets** for RDS — database never directly internet-accessible
+- **S3 versioning** prevents accidental data loss on static assets
+- **IAM least-privilege** — each tier has only the permissions it needs
+
+## Setup Guide
+
+### Prerequisites
+- AWS Account + CLI configured
+- Basic knowledge of VPC and EC2
+
+### Deployment Order
+1. Create VPC with 2 public + 2 private subnets (one each per AZ)
+2. Attach Internet Gateway; configure NAT Gateway in public subnet
+3. Set up Security Groups (ALB → EC2 → RDS chain)
+4. Launch EC2 instances with Launch Template + Auto Scaling Group
+5. Create Application Load Balancer + Target Group
+6. Provision RDS MySQL in Multi-AZ mode (private subnets)
+7. Create S3 bucket — enable versioning + static website hosting
+8. Configure IAM roles for EC2 (S3 read, CloudWatch write)
+9. Set up CloudWatch Dashboards + Alarms + SNS notification
+10. Register/configure Route 53 hosted zone + health checks
+
+## Security Checklist
+- [ ] Security groups follow least-privilege (no 0.0.0.0/0 on RDS)
+- [ ] IAM roles — no access keys on EC2
+- [ ] S3 bucket — public access blocked
+- [ ] RDS — automated backups enabled, deletion protection on
+- [ ] CloudWatch alarms — CPU, disk, RDS connections
+
+## License
+MIT
