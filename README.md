@@ -1,0 +1,17 @@
+.env
+.env.local
+.env.*
+*.pem
+*.ppk
+credentials
+.aws/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+logs/

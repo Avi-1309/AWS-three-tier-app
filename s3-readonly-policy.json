@@ -1,0 +1,28 @@
+{
+  "Alarms": [
+    {
+      "AlarmName": "three-tier-ec2-high-cpu",
+      "MetricName": "CPUUtilization",
+      "Namespace": "AWS/EC2",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 75.0,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Dimensions": [{ "Name": "AutoScalingGroupName", "Value": "three-tier-web-asg" }],
+      "AlarmActions": ["arn:aws:sns:ap-south-1:YOUR_ACCOUNT_ID:three-tier-alerts"]
+    },
+    {
+      "AlarmName": "three-tier-rds-connections",
+      "MetricName": "DatabaseConnections",
+      "Namespace": "AWS/RDS",
+      "Statistic": "Average",
+      "Period": 300,
+      "EvaluationPeriods": 1,
+      "Threshold": 50.0,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "Dimensions": [{ "Name": "DBInstanceIdentifier", "Value": "three-tier-rds" }],
+      "AlarmActions": ["arn:aws:sns:ap-south-1:YOUR_ACCOUNT_ID:three-tier-alerts"]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+# Security Group Rules — Three-Tier Web Application
+
+## ALB Security Group (alb-sg)
+| Type | Protocol | Port | Source | Purpose |
+|---|---|---|---|---|
+| Inbound | HTTP | 80 | 0.0.0.0/0 | Public web traffic |
+| Inbound | HTTPS | 443 | 0.0.0.0/0 | Secure web traffic |
+| Outbound | All | All | 0.0.0.0/0 | Allow all outbound |
+
+## Web Tier EC2 Security Group (web-sg)
+| Type | Protocol | Port | Source | Purpose |
+|---|---|---|---|---|
+| Inbound | HTTP | 80 | alb-sg | Traffic from ALB only |
+| Inbound | HTTPS | 443 | alb-sg | Traffic from ALB only |
+| Inbound | SSH | 22 | Your IP only | Admin access |
+| Outbound | MySQL | 3306 | db-sg | Connect to RDS |
+| Outbound | HTTPS | 443 | 0.0.0.0/0 | AWS API calls (S3, etc.) |
+
+## RDS Security Group (db-sg)
+| Type | Protocol | Port | Source | Purpose |
+|---|---|---|---|---|
+| Inbound | MySQL | 3306 | web-sg | Web tier DB access only |
+| Outbound | None | — | — | No outbound needed |
+
+## Key Security Principles Applied
+- RDS is in private subnets — no direct internet access
+- EC2 only accepts traffic from ALB, not directly from internet
+- SSH restricted to specific IP (not 0.0.0.0/0)
+- Database port only open to web tier security group
