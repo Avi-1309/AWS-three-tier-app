@@ -71,5 +71,8 @@ A highly available three-tier web application built on AWS, spanning multiple Av
 - [ ] RDS — automated backups enabled, deletion protection on
 - [ ] CloudWatch alarms — CPU, disk, RDS connections
 
+## Author
+**Pithani Avinash** — AWS Cloud Engineer  
+
 ## License
 MIT
